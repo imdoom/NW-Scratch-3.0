@@ -1,10 +1,9 @@
 import bindAll from 'lodash.bindall';
 import React from 'react';
 import {connect} from 'react-redux';
-import projectTitleReducer, {projectTitleInitialState} from '../reducers/project-title';
-import guiReducer from '../reducers/gui';
+import {projectTitleInitialState} from '../reducers/project-title';
 import {MenuItem} from '../components/menu/menu.jsx';
-import downloadBlob from '../lib/download-blob';
+import downloadBlob from './download-blob';
 import { gapi } from 'gapi-script';
 
 const SCOPE = 'https://www.googleapis.com/auth/drive.file';
@@ -63,8 +62,8 @@ class DriveUploadBlob extends React.Component {
     
     setSigninStatus = () => {
         var googleUser = null || this.state.googleAuth.currentUser.get();
-        if (googleUser && googleUser.isSignedIn()) {
-            console.log(googleUser);
+        console.log(googleUser);
+        if (googleUser.isSignedIn()) {
             this.setState((state) => {
                 return {
                     ...state,
@@ -108,14 +107,6 @@ class DriveUploadBlob extends React.Component {
                 //   console.log(file)
                 // });
             }
-        } else {
-            this.setState((state) => {
-                return {
-                    ...state,
-                    signedIn: false,
-                    name: ''
-                }
-            });
         }
     }
 
@@ -143,12 +134,12 @@ class DriveUploadBlob extends React.Component {
             <MenuItem>
                 UserName: {this.state.name}
             </MenuItem>
-            {!this.state.signedIn && <MenuItem id="signin-btn" onClick={this.signInFunction}>
+            {this.state.signedIn && <MenuItem id="signin-btn" onClick={this.signInFunction}>
                 Sign-In
             </MenuItem>}
-            {this.state.signedIn && <MenuItem id="signout-btn" onClick={this.signOutFunction}>
+            <MenuItem id="signout-btn" onClick={this.signOutFunction}>
                 Sign-Out
-            </MenuItem>}
+            </MenuItem>
             <MenuItem
                 onClick={this.downloadProject}
             >

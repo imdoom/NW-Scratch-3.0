@@ -1,6 +1,6 @@
 import classNames from 'classnames';
-import {connect} from 'react-redux';
-import {compose} from 'redux';
+import {connect, Provider } from 'react-redux';
+import {compose, createStore} from 'redux';
 import {defineMessages, FormattedMessage, injectIntl, intlShape} from 'react-intl';
 import PropTypes from 'prop-types';
 import bindAll from 'lodash.bindall';
@@ -72,9 +72,7 @@ import remixIcon from './icon--remix.svg';
 import dropdownCaret from './dropdown-caret.svg';
 import languageIcon from '../language-selector/language-icon.svg';
 import aboutIcon from './icon--about.svg';
-
 import scratchLogo from './scratch-logo.svg';
-
 import sharedMessages from '../../lib/shared-messages';
 
 const ariaMessages = defineMessages({
@@ -465,22 +463,32 @@ class MenuBar extends React.Component {
                                         >
                                             {this.props.intl.formatMessage(sharedMessages.loadFromComputerTitle)}
                                         </MenuItem>
-                                        <SB3Downloader>{(className, downloadProjectCallback) => (
+                                        <SB3Downloader />
+                                        {/* <SB3Downloader>{(className, downloadProjectCallback) => (
                                             <MenuItem
                                                 className={className}
                                                 onClick={this.getSaveToComputerHandler(downloadProjectCallback)}
+                                                onLogin={this.props.onDriveLogIn}
                                             >
                                                 <FormattedMessage
-                                                    defaultMessage="Save to your computer"
-                                                    description="Menu bar item for downloading a project to your computer" // eslint-disable-line max-len
-                                                    id="gui.menuBar.downloadToComputer"
+                                                    defaultMessage="Save to google drive"
+                                                    description="Menu bar item for saving a project to google drive" // eslint-disable-line max-len
+                                                    id="gui.menuBar.saveToGoogleDrive"
                                                 />
                                             </MenuItem>
-                                        )}</SB3Downloader>
+                                        )}</SB3Downloader> */}
                                     </MenuSection>
                                 </MenuBarMenu>
                             </div>
                         )}
+                        {/* <div
+                            aria-label="sign out"
+                            className={classNames(styles.menuBarItem, styles.hoverable)}
+                            id="gui.menuBar.signOut"
+                            onClick={this.props.onDriveLogOut()}
+                        >
+                            Sign Out
+                        </div> */}
                         <div
                             className={classNames(styles.menuBarItem, styles.hoverable, {
                                 [styles.active]: this.props.editMenuOpen
@@ -823,7 +831,8 @@ MenuBar.propTypes = {
     showComingSoon: PropTypes.bool,
     userOwnsProject: PropTypes.bool,
     username: PropTypes.string,
-    vm: PropTypes.instanceOf(VM).isRequired
+    vm: PropTypes.instanceOf(VM).isRequired,
+    saveProjectSb3: PropTypes.func
 };
 
 MenuBar.defaultProps = {
@@ -850,11 +859,14 @@ const mapStateToProps = (state, ownProps) => {
         username: user ? user.username : null,
         userOwnsProject: ownProps.authorUsername && user &&
             (ownProps.authorUsername === user.username),
-        vm: state.scratchGui.vm
+        vm: state.scratchGui.vm,
+        saveProjectSb3: state.scratchGui.vm.saveProjectSb3.bind(state.scratchGui.vm)
     };
 };
 
 const mapDispatchToProps = dispatch => ({
+    onDriveLogIn : (user) => dispatch(logIn(user)),
+    onDriveLogOut : () => dispatch(logOut()),
     autoUpdateProject: () => dispatch(autoUpdateProject()),
     onOpenTipLibrary: () => dispatch(openTipsLibrary()),
     onClickAccount: () => dispatch(openAccountMenu()),

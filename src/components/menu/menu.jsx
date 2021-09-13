@@ -36,7 +36,8 @@ MenuComponent.propTypes = {
 const MenuItem = ({
     children,
     className,
-    onClick
+    onClick,
+    id
 }) => (
     <li
         className={classNames(
@@ -45,6 +46,7 @@ const MenuItem = ({
             className
         )}
         onClick={onClick}
+        id={id}
     >
         {children}
     </li>
