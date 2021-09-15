@@ -9,6 +9,7 @@ import blockDragReducer, {blockDragInitialState} from './block-drag';
 import editorTabReducer, {editorTabInitialState} from './editor-tab';
 import hoveredTargetReducer, {hoveredTargetInitialState} from './hovered-target';
 import menuReducer, {menuInitialState} from './menus';
+import driveLoginReducer, {driveLoginInitialState} from './drive-login';
 import micIndicatorReducer, {micIndicatorInitialState} from './mic-indicator';
 import modalReducer, {modalsInitialState} from './modals';
 import modeReducer, {modeInitialState} from './mode';
@@ -45,6 +46,7 @@ const guiInitialState = {
     hoveredTarget: hoveredTargetInitialState,
     stageSize: stageSizeInitialState,
     menus: menuInitialState,
+    driveLogin : driveLoginInitialState,
     micIndicator: micIndicatorInitialState,
     modals: modalsInitialState,
     monitors: monitorsInitialState,
@@ -144,6 +146,7 @@ const guiReducer = combineReducers({
     hoveredTarget: hoveredTargetReducer,
     stageSize: stageSizeReducer,
     menus: menuReducer,
+    driveLogin : driveLoginReducer,
     micIndicator: micIndicatorReducer,
     modals: modalReducer,
     monitors: monitorReducer,

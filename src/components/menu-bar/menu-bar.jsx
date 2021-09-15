@@ -1,6 +1,6 @@
 import classNames from 'classnames';
-import {connect, Provider } from 'react-redux';
-import {compose, createStore} from 'redux';
+import {connect } from 'react-redux';
+import {compose} from 'redux';
 import {defineMessages, FormattedMessage, injectIntl, intlShape} from 'react-intl';
 import PropTypes from 'prop-types';
 import bindAll from 'lodash.bindall';
@@ -463,7 +463,7 @@ class MenuBar extends React.Component {
                                         >
                                             {this.props.intl.formatMessage(sharedMessages.loadFromComputerTitle)}
                                         </MenuItem>
-                                        <SB3Downloader />
+                                        
                                         {/* <SB3Downloader>{(className, downloadProjectCallback) => (
                                             <MenuItem
                                                 className={className}
@@ -481,14 +481,6 @@ class MenuBar extends React.Component {
                                 </MenuBarMenu>
                             </div>
                         )}
-                        {/* <div
-                            aria-label="sign out"
-                            className={classNames(styles.menuBarItem, styles.hoverable)}
-                            id="gui.menuBar.signOut"
-                            onClick={this.props.onDriveLogOut()}
-                        >
-                            Sign Out
-                        </div> */}
                         <div
                             className={classNames(styles.menuBarItem, styles.hoverable, {
                                 [styles.active]: this.props.editMenuOpen
@@ -623,6 +615,11 @@ class MenuBar extends React.Component {
                             </MenuBarItemTooltip>
                         ) : [])}
                     </div>
+                    <SB3Downloader />
+                    {this.props.user &&
+                    <MenuItem>
+                        Welcome {this.props.user}!
+                    </MenuItem>}
                 </div>
 
                 {/* show the proper UI in the account menu, given whether the user is
@@ -754,7 +751,6 @@ class MenuBar extends React.Component {
                         </React.Fragment>
                     )}
                 </div>
-
                 {aboutButton}
             </Box>
         );
@@ -831,8 +827,7 @@ MenuBar.propTypes = {
     showComingSoon: PropTypes.bool,
     userOwnsProject: PropTypes.bool,
     username: PropTypes.string,
-    vm: PropTypes.instanceOf(VM).isRequired,
-    saveProjectSb3: PropTypes.func
+    vm: PropTypes.instanceOf(VM).isRequired
 };
 
 MenuBar.defaultProps = {
@@ -860,13 +855,11 @@ const mapStateToProps = (state, ownProps) => {
         userOwnsProject: ownProps.authorUsername && user &&
             (ownProps.authorUsername === user.username),
         vm: state.scratchGui.vm,
-        saveProjectSb3: state.scratchGui.vm.saveProjectSb3.bind(state.scratchGui.vm)
+        user : state.scratchGui.driveLogin.userName
     };
 };
 
 const mapDispatchToProps = dispatch => ({
-    onDriveLogIn : (user) => dispatch(logIn(user)),
-    onDriveLogOut : () => dispatch(logOut()),
     autoUpdateProject: () => dispatch(autoUpdateProject()),
     onOpenTipLibrary: () => dispatch(openTipsLibrary()),
     onClickAccount: () => dispatch(openAccountMenu()),

@@ -41,10 +41,6 @@ const closeMenu = menu => ({
     type: CLOSE_MENU,
     menu: menu
 });
-const logIn = () => ({
-    type : LOG_IN,
-    menu : MENU_DRIVE_LOGIN
-})
 
 const openAboutMenu = () => openMenu(MENU_ABOUT);
 const closeAboutMenu = () => closeMenu(MENU_ABOUT);
