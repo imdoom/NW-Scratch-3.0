@@ -67,38 +67,28 @@ class DriveUploadBlob extends React.Component {
     saveToDrive = () => {
         var googleUser = null || this.props.googleAuth.currentUser.get();
         var isAuthorized = googleUser.hasGrantedScopes(SCOPE);
-        if (googleUser && isAuthorized) {           
-            const boundary='foo_bar_baz'
-            const delimiter = "\r\n--" + boundary + "\r\n";
-            const close_delim = "\r\n--" + boundary + "--";
-            var fileName='mychat123';
-            var fileData='this is a sample data';
-            var contentType='text/plain'
-            var metadata = {
-                'name': fileName,
-                'mimeType': contentType
-            };    
-            var multipartRequestBody =
-                delimiter +
-                'Content-Type: application/json; charset=UTF-8\r\n\r\n' +
-                JSON.stringify(metadata) +
-                delimiter +
-                'Content-Type: ' + contentType + '\r\n\r\n' +
-                fileData+'\r\n'+
-                close_delim;
-    
-                console.log(multipartRequestBody);
-                var request = window.gapi.client.request({
-                'path': 'https://www.googleapis.com/upload/drive/v3/files',
-                'method': 'POST',
-                'params': {'uploadType': 'multipart'},
-                'headers': {
-                    'Content-Type': 'multipart/related; boundary=' + boundary + ''
-                },
-                'body': multipartRequestBody});
-            request.execute(function(file) {
-                console.log(file)
-            });
+        if (googleUser && isAuthorized) {
+            this.props.saveProjectSb3().then(content => {
+                var fileName = prompt("Please enter the file name", "My Scratch Project");
+                var metadata = {
+                    'name': fileName+'.sb3',
+                    'mimeType': content.type
+                    //'parents': ['Scratch'], // Folder ID at Google Drive
+                };                
+                var accessToken = gapi.auth.getToken().access_token; // Here gapi is used for retrieving the access token.
+                var form = new FormData();
+                form.append('metadata', new Blob([JSON.stringify(metadata)], {type: 'application/json'}));
+                form.append('file', content);
+        
+                var xhr = new XMLHttpRequest();
+                xhr.open('post', 'https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id');
+                xhr.setRequestHeader('Authorization', 'Bearer ' + accessToken);
+                xhr.responseType = 'json';
+                xhr.onload = () => {
+                    console.log(xhr.response.id); // Retrieve uploaded file ID.
+                };
+                xhr.send(form);
+            });   
         }
     }
 
@@ -112,12 +102,7 @@ class DriveUploadBlob extends React.Component {
 
     downloadProject () {
         this.props.saveProjectSb3().then(content => {
-            if (this.props.onSaveFinished) {
-                console.log('done');
-                this.props.onSaveFinished();
-            }
             downloadBlob(this.getProjectFilename(), content);
-            //driveUploadBlob(this.props.projectFilename, content);
         });
     }
     render () {
@@ -138,6 +123,7 @@ class DriveUploadBlob extends React.Component {
                 </MenuItem>
                 <MenuItem
                     onClick={this.downloadProject}
+                    id={"savetodrive-div"}
                 >
                     Save to your computer
                 </MenuItem>

@@ -1,8 +1,10 @@
+import { urlContains } from "selenium-webdriver/lib/until";
+
 export default (filename, blob) => {
     const downloadLink = document.createElement('a');
     document.body.appendChild(downloadLink);
 
-    // Use special ms version if available to get it working on Edge.
+    //Use special ms version if available to get it working on Edge.
     if (navigator.msSaveOrOpenBlob) {
         navigator.msSaveOrOpenBlob(blob, filename);
         return;

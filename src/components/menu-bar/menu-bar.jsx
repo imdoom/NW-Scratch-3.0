@@ -615,11 +615,11 @@ class MenuBar extends React.Component {
                             </MenuBarItemTooltip>
                         ) : [])}
                     </div>
-                    <SB3Downloader />
                     {this.props.user &&
                     <MenuItem>
-                        Welcome {this.props.user}!
+                        Welcome! {this.props.user}
                     </MenuItem>}
+                    <SB3Downloader />                    
                 </div>
 
                 {/* show the proper UI in the account menu, given whether the user is
