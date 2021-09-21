@@ -615,9 +615,9 @@ class MenuBar extends React.Component {
                             </MenuBarItemTooltip>
                         ) : [])}
                     </div>
-                    {this.props.user &&
+                    {this.props.userName &&
                     <MenuItem>
-                        Welcome! {this.props.user}
+                        Welcome! {this.props.userName}
                     </MenuItem>}
                     <SB3Downloader />                    
                 </div>
@@ -855,7 +855,7 @@ const mapStateToProps = (state, ownProps) => {
         userOwnsProject: ownProps.authorUsername && user &&
             (ownProps.authorUsername === user.username),
         vm: state.scratchGui.vm,
-        user : state.scratchGui.driveLogin.userName
+        userName : state.scratchGui.driveLogin.userName
     };
 };
 
