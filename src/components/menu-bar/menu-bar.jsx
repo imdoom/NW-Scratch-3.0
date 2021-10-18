@@ -24,7 +24,7 @@ import ProjectTitleInput from './project-title-input.jsx';
 import AuthorInfo from './author-info.jsx';
 import AccountNav from '../../containers/account-nav.jsx';
 import LoginDropdown from './login-dropdown.jsx';
-import SB3Downloader from '../../containers/sb3-downloader.jsx';
+import SB3DownloaderUploader from '../../containers/sb3-downloader.jsx';
 import DeletionRestorer from '../../containers/deletion-restorer.jsx';
 import TurboMode from '../../containers/turbo-mode.jsx';
 import MenuBarHOC from '../../containers/menu-bar-hoc.jsx';
@@ -463,20 +463,6 @@ class MenuBar extends React.Component {
                                         >
                                             {this.props.intl.formatMessage(sharedMessages.loadFromComputerTitle)}
                                         </MenuItem>
-                                        
-                                        {/* <SB3Downloader>{(className, downloadProjectCallback) => (
-                                            <MenuItem
-                                                className={className}
-                                                onClick={this.getSaveToComputerHandler(downloadProjectCallback)}
-                                                onLogin={this.props.onDriveLogIn}
-                                            >
-                                                <FormattedMessage
-                                                    defaultMessage="Save to google drive"
-                                                    description="Menu bar item for saving a project to google drive" // eslint-disable-line max-len
-                                                    id="gui.menuBar.saveToGoogleDrive"
-                                                />
-                                            </MenuItem>
-                                        )}</SB3Downloader> */}
                                     </MenuSection>
                                 </MenuBarMenu>
                             </div>
@@ -619,7 +605,7 @@ class MenuBar extends React.Component {
                     <MenuItem>
                         Welcome! {this.props.userName}
                     </MenuItem>}
-                    <SB3Downloader />                    
+                    <SB3DownloaderUploader />                    
                 </div>
 
                 {/* show the proper UI in the account menu, given whether the user is

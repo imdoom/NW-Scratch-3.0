@@ -39,7 +39,7 @@ const messages = defineMessages({
  *     <WrappedComponent />
  * </SBFileUploaderHOC>
  */
-const SBFileUploaderHOC = function (WrappedComponent) {
+export const SBFileUploaderHOC = function (WrappedComponent) {
     class SBFileUploaderComponent extends React.Component {
         constructor (props) {
             super(props);

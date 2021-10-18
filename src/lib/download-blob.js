@@ -1,5 +1,3 @@
-import { urlContains } from "selenium-webdriver/lib/until";
-
 export default (filename, blob) => {
     const downloadLink = document.createElement('a');
     document.body.appendChild(downloadLink);

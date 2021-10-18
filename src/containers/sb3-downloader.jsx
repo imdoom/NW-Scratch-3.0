@@ -18,7 +18,7 @@ const apiKey = "AIzaSyACUh3Wedl4ofcS86i8Q8tvDFSQQPoRTGE";
 const clientId = "28777473097-vi5cnuplfdl680ab8p93htss35s107tn.apps.googleusercontent.com";
 const googleJsClientApi = "https://apis.google.com/js/api.js";
 
-class DriveUploadBlob extends React.Component {
+class DriveUploadDownload extends React.Component {
     constructor (props) {   
         super(props);
         bindAll(this, [
@@ -83,8 +83,7 @@ class DriveUploadBlob extends React.Component {
                 var fileName = prompt("Please enter the file name", "My Scratch Project");
                 var metadata = {
                     'name': fileName+'.sb3',
-                    'mimeType': content.type
-                    //'parents': ['Scratch'], // Folder ID at Google Drive
+                    'mimeType': content.type //application/x.scratch.sb3
                 };                
                 var accessToken = googleUser.xc.access_token // Here gapi is used for retrieving the access token.
                 var form = new FormData();
@@ -116,17 +115,33 @@ class DriveUploadBlob extends React.Component {
                 .addView(view)
                 .addView(new google.picker.DocsUploadView())
                 .setDeveloperKey(apiKey)
-                .setCallback(this.pickerCallback)
+                .setCallback(this.loadSB3toScracth)
                 .setOrigin(window.location.protocol + '//' + window.location.host)
                 .build();
              picker.setVisible(true);
         }
     }
 
-    pickerCallback = (data) => {
-        if (data.action == google.picker.Action.PICKED) {
-            var fileId = data.docs[0].id;
-            alert('The user selected: ' + fileId);
+    loadSB3toScracth = (pickerResp) => {
+        if (pickerResp.action == google.picker.Action.PICKED) {
+            gapi.client.drive.files.get({fileId: pickerResp.docs[0].id, alt: "media"})
+            .then(data => {
+                console.log("fetch response", data.status);
+                //console.log(data.body);
+                let binary = data.body;
+                let l = binary.length
+                let array = new Uint8Array(l);
+                for (var i = 0; i<l; i++){
+                    array[i] = binary.charCodeAt(i);
+                }
+                let blob = new Blob([array], {type: 'application/x.scratch.sb3'});  
+                blob.arrayBuffer().then(buffer => this.props.loadProject(buffer).then(() => {
+                    console.log('loaded');
+                })
+                .catch(error => {
+                    console.warn(error);
+                }));               
+            });
         }
     }
 
@@ -161,16 +176,16 @@ class DriveUploadBlob extends React.Component {
                     Save to drive
                 </MenuItem>
                 <MenuItem
-                    onClick={this.downloadProject}
-                    id={"savetodrive-div"}
-                >
-                    Save to your computer
-                </MenuItem>
-                <MenuItem
                     onClick={this.googlePicker}
                     id={"loadfromdrive-div"}
                 >
                     Load from drive
+                </MenuItem>
+                <MenuItem
+                    onClick={this.downloadProject}
+                    id={"savetodrive-div"}
+                >
+                    Save to your computer
                 </MenuItem>
             </>
         )
@@ -184,7 +199,8 @@ const mapStateToProps = state => ({
     userName : state.scratchGui.driveLogin.userName,
     signedIn : state.scratchGui.driveLogin.signedIn,
     googleUser : state.scratchGui.driveLogin.googleUser,
-    pickerApiLoaded : state.scratchGui.driveLogin.pickerApiLoaded
+    pickerApiLoaded : state.scratchGui.driveLogin.pickerApiLoaded,
+    loadProject : state.scratchGui.vm.loadProject.bind(state.scratchGui.vm)
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -195,4 +211,5 @@ const mapDispatchToProps = dispatch => ({
     onPickerLoad : () => dispatch(setPickerApiLoaded())
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(DriveUploadBlob);
+
+export default connect(mapStateToProps, mapDispatchToProps)(DriveUploadDownload);
